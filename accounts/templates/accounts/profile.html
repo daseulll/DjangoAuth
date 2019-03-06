@@ -3,5 +3,7 @@
 {% block content %}
 
     <h2>{{ user }}'s profile </h2>
-
+    {{ user.profile }}
+    {{ user.profile.bio|default:"empty" }}
+    {{ user.profile.website_url }}
 {% endblock %}
