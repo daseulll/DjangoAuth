@@ -86,3 +86,20 @@ class MyPasswordChangeView(PasswordChangeView):
         messages.info(self.request, "암호 변경이 완료되었습니다.")
         return super().form_valid(form)
 
+
+class MyPasswordResetView(PasswordResetView):
+    success_url = reverse_lazy('login')
+    template_name = 'accounts/password_reset_form.html'
+    # email_template_name = ... 보내고싶은 email 내용
+    # html_email_template_name = ...
+
+    def form_valid(self, form):
+        messages.info(self.request, "암호 초기화 메일을 발송했습니다.")
+        return super().form_valid(form)
+
+class MyPasswordResetConfirmView(PasswordResetConfirmView):
+    success_url = reverse_lazy('login')
+    template_name = 'accounts/password_reset_confirm.html'
+    def form_valid(self, form):
+        messages.info(self.request, "암호 초기화를 완료했습니다.")
+        return super().form_valid(form)
