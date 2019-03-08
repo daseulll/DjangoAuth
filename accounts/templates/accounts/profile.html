@@ -1,10 +1,15 @@
 {% extends "accounts/layout.html" %}
 
 {% block content %}
-
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
     <h2>{{ user.username }}의 정보 </h2>
     프로필 객체 : {{ user.profile }}
     <h4>email : {{ user.email|default:"&dash;" }}</h4>
     <h4>내 소개 : {{ user.profile.bio|default:"&dash;" }}</h4>
     <h4>웹사이트 : {{ user.profile.website_url|default:"&dash;" }}</h4>
+
+    <hr />
+    <a href="{% url 'password_change' %}">암호변경하기</a>
 {% endblock %}

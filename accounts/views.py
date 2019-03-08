@@ -77,3 +77,12 @@ def login_via_url(request, uidb64, token):
     messages.error(request, '로그인이 거부되었습니다.')
     return redirect('root')
 
+
+class MyPasswordChangeView(PasswordChangeView):
+    success_url=reverse_lazy('profile')
+    template_name='accounts/password_change_form.html'
+
+    def form_valid(self, form):
+        messages.info(self.request, "암호 변경이 완료되었습니다.")
+        return super().form_valid(form)
+
