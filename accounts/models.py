@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import UserManager
 from django.db.models.signals import post_save 
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -11,8 +12,12 @@ class User(AbstractUser):  # auth앱 내 User모델에 대한 Proxy
         choices=(
             ('f', 'female'),
             ('m', 'male'),
-        ))
+        ),
+        verbose_name='성별')
         
+    objects = UserManager()
+
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
