@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import (
     PasswordResetView, 
@@ -13,10 +14,11 @@ from django.contrib.auth.views import (
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.http import Http404
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.shortcuts import render, redirect, resolve_url
 from django.urls import reverse_lazy
-from .forms import SignupForm
+from .forms import SignupForm, ProfileForm
+from .models import Profile
 
 
 # def signup(request):
@@ -35,7 +37,6 @@ from .forms import SignupForm
 #     })
 
 class SignupView(CreateView):
-    User = get_user_model()
     model = User
     form_class = SignupForm
     template_name = 'accounts/signup.html'
@@ -55,6 +56,17 @@ signup = SignupView.as_view()
 @login_required
 def profile(request):
     return render(request, 'accounts/profile.html')
+
+class ProfileUpdataView(UpdateView, LoginRequiredMixin):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'accounts/profile_edit.html'
+    success_url = reverse_lazy('profile')
+
+    def get_object(self):
+        return self.request.user.profile
+
+profile_edit = ProfileUpdataView.as_view()
 
 class RequestLoginViaUrlView(PasswordResetView):
     template_name = 'accounts/request_login_via_url_form.html'
