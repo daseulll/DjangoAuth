@@ -1,3 +1,4 @@
+from importlib import import_module
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as AuthUserManager
@@ -6,6 +7,7 @@ from django.db.models.signals import post_save
 from django.core.mail import send_mail
 from django.db import models
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 class UserManager(AuthUserManager):
     def create_superuser(self, username, email, password, **extra_fields):
@@ -49,3 +51,20 @@ class UserSession(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
 	session_key = models.CharField(max_length=40, editable=False)
 	created_at = models.DateTimeField(auto_now_add=True)
+
+
+def kick_my_other_sessions(sender, request, user, **kwargs):
+    print('kick my other sessions')
+
+    for user_session in UserSession.objects.filter(user=user):
+        session_key = user_session.session_key
+        session = SessionStore(session_key) 
+        # session.delete()
+        session['kicked'] = True
+        session.save()
+        user_session.delete()
+
+    session_key = request.session.session_key
+    UserSession.objects.create(user=user, session_key=session_key)
+
+user_logged_in.connect(kick_my_other_sessions)
