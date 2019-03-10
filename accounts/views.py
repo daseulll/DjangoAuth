@@ -1,22 +1,23 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import (
     PasswordResetView, 
     PasswordResetConfirmView, 
     PasswordChangeView
 )
+from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.http import Http404
-from django.contrib.auth.models import User
 from django.views.generic import CreateView
 from django.shortcuts import render, redirect, resolve_url
 from django.urls import reverse_lazy
 from .forms import SignupForm
+
 
 # def signup(request):
 #     if request.method == "POST":
@@ -34,6 +35,7 @@ from .forms import SignupForm
 #     })
 
 class SignupView(CreateView):
+    User = get_user_model()
     model = User
     form_class = SignupForm
     template_name = 'accounts/signup.html'

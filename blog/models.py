@@ -9,3 +9,8 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta :
+        permissions = [
+            ['can_view_goldpage', 'can view goldpage']
+        ]

@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import validate_email
 
+
 class SignupForm(UserCreationForm):
+    User = get_user_model()
     # 유효성검사: 각 필드에 대한 validators, clean_필드명, clean 로 수행
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs) #super()로 부모데이터를 호출하면, self.fields에 dict형태로 부모의 필드 데이터가 모두 담김

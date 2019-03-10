@@ -1,10 +1,15 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import UserManager
+from django.contrib.auth.models import UserManager as AuthUserManager
 from django.db.models.signals import post_save 
-from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.db import models
+
+
+class UserManager(AuthUserManager):
+    def create_superuser(self, username, email, password, **extra_fields):
+        extra_fields.setdefault('sex', 'm')
+        return super().create_superuser(username, email, password, **extra_fields)
 
 class User(AbstractUser):  # auth앱 내 User모델에 대한 Proxy
     sex = models.CharField(
@@ -36,4 +41,4 @@ def on_post_save_for_user(sender, **kwargs):
             fail_silently=False,
         )
 
-post_save.connect(on_post_save_for_user, sender=settings.AUTH_USER_MODEL)
+post_save.connect(on_post_save_for_user, sender=settings.AUTH_USER_MODEL) 
